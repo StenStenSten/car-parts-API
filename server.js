@@ -66,6 +66,22 @@ app.get("/spare-parts", (req, res) => {
     );
   }
 
+  app.get("/spare-parts/search/:term", (req, res) => {
+    const { term } = req.params; 
+    const lowerTerm = term.toLowerCase();
+  
+    const results = spareParts.filter(
+      (item) =>
+        item.name.toLowerCase().includes(lowerTerm) ||
+        item.serialNumber.includes(term) 
+    );
+  
+    res.json({
+      totalResults: results.length,
+      data: results,
+    });
+  });
+
   // Sorting
   if (sort) {
     const isDescending = sort.startsWith("-");
