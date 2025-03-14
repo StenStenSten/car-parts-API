@@ -70,14 +70,20 @@ app.get("/spare-parts", (req, res) => {
   if (sort) {
     const isDescending = sort.startsWith("-");
     const sortField = sort.replace("-", "");
-
+  
     results = results.sort((a, b) => {
-      if (sortField === "price") {
-        return isDescending ? b.price - a.price : a.price - b.price;
+      let aValue = a[sortField];
+      let bValue = b[sortField];
+  
+      // Convert to lowercase for case-insensitive sorting (if strings)
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
       }
-      if (sortField === "finalPrice") {
-        return isDescending ? b.finalPrice - a.finalPrice : a.finalPrice - b.finalPrice;
-      }
+  
+      // Compare numbers or strings
+      if (aValue < bValue) return isDescending ? 1 : -1;
+      if (aValue > bValue) return isDescending ? -1 : 1;
       return 0;
     });
   }
